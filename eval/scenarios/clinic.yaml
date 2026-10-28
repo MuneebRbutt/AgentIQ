@@ -1,0 +1,107 @@
+# Evaluation scenarios for the clinic profile (FR-10, TC-10; ADR-0009). Synthetic data, no
+# real patients or doctors.
+domain: clinic
+documents: [patient_guide.md]
+scenarios:
+  - id: C01
+    title: Saturday timings
+    category: knowledge
+    start: "2026-11-02T09:30"
+    caller: {name: Fatima Khan, phone: "+92 302 5550301"}
+    turns:
+      - What are your timings on Saturday?
+    expect:
+      - {kind: answer, id: saturday-hours, topic: hours, facts: [["10:00", "10 am", "10am", "10:00 am"], ["14:00", "2 pm", "2pm", "2:00 pm"]]}
+
+  - id: C02
+    title: Price of a paediatric consultation
+    category: knowledge
+    start: "2026-11-02T09:30"
+    caller: {name: Imran Butt, phone: "+92 302 5550302"}
+    turns:
+      - How much does a paediatric consultation cost?
+    expect:
+      - {kind: answer, id: paediatric-price, topic: services, facts: [["2,500", "2500"]]}
+
+  - id: C03
+    title: Vaccination days (document)
+    category: knowledge
+    start: "2026-11-02T09:30"
+    caller: {name: Nadia Saleem, phone: "+92 302 5550303"}
+    turns:
+      - On which days do you give children's vaccines?
+    expect:
+      - {kind: answer, id: vaccine-days, facts: [["tuesday", "tuesdays"], ["thursday", "thursdays"]]}
+
+  - id: C04
+    title: Blood test sample times (document)
+    category: knowledge
+    start: "2026-11-02T09:30"
+    caller: {name: Tariq Mahmood, phone: "+92 302 5550304"}
+    turns:
+      - At what time can I come in to give a blood sample?
+    expect:
+      - {kind: answer, id: blood-test, facts: [["9:00", "09:00", "9 am", "9am", "9:00 am"], ["11:00", "11 am", "11am", "11:00 am"]]}
+
+  - id: C05
+    title: Book a general consultation
+    category: booking
+    start: "2026-11-02T09:30"
+    caller: {name: Fatima Khan, phone: "+92 302 5550305", details: {patient_age: "34", reason_for_visit: "Fever and sore throat"}}
+    turns:
+      - I'd like to book a general consultation on Wednesday 4 November at 10 am. My name is Fatima Khan.
+    expect:
+      - {kind: booking, id: consultation, service_id: general-consultation, party_size: 1, date: "2026-11-04", time: "10:00"}
+
+  - id: C06
+    title: Cancel an appointment by reference
+    category: cancellation
+    start: "2026-11-02T09:30"
+    caller: {name: Saima Rauf, phone: "+92 302 5550306", details: {patient_age: "41", reason_for_visit: "Blood pressure check"}}
+    setup_booking: {service_id: general-consultation, party_size: 1, date: "2026-11-05", time: "18:00"}
+    turns:
+      - Please cancel my appointment, the reference is {reference}.
+    expect:
+      - {kind: cancelled, id: cancel}
+
+  - id: C07
+    title: Walk-ins plus a paediatric booking
+    category: multi_intent
+    start: "2026-11-02T09:30"
+    caller: {name: Imran Butt, phone: "+92 302 5550307", details: {patient_age: "6", reason_for_visit: "Cough for a week"}}
+    turns:
+      - Do you accept walk-ins? Also please book a paediatric consultation on Thursday 5 November at 5:30 pm, name Imran Butt.
+    expect:
+      - {kind: answer, id: walk-ins, topic: policies, facts: [["doctor is free", "doctor is available", "when a doctor", "appointments come first", "booked appointments", "priority"]]}
+      - {kind: booking, id: consultation, service_id: paediatric-consultation, party_size: 1, date: "2026-11-05", time: "17:30"}
+
+  - id: C08
+    title: Address plus a follow-up visit
+    category: multi_intent
+    start: "2026-11-02T09:30"
+    caller: {name: Nadia Saleem, phone: "+92 302 5550308", details: {patient_age: "29", reason_for_visit: "Follow-up on test results"}}
+    turns:
+      - What is your address? And can I book a follow-up visit on Saturday 7 November at 11 am? I'm Nadia Saleem.
+    expect:
+      - {kind: answer, id: address, topic: contact, facts: [["jail road"]]}
+      - {kind: booking, id: follow-up, service_id: follow-up, party_size: 1, date: "2026-11-07", time: "11:00"}
+
+  - id: C09
+    title: Patient makes a complaint
+    category: complaint
+    start: "2026-11-02T09:30"
+    caller: {name: Asad Rehman, phone: "+92 302 5550309"}
+    turns:
+      - I waited two hours past my appointment and the receptionist was rude to me. I want to make a complaint.
+    expect:
+      - {kind: escalation, id: handoff}
+
+  - id: C10
+    title: Price of something the business never mentions
+    category: out_of_scope
+    start: "2026-11-02T09:30"
+    caller: {name: Hamid Ali, phone: "+92 302 5550310"}
+    turns:
+      - How much does an MRI scan cost at your clinic?
+    expect:
+      - {kind: refusal, id: no-mri-price, forbid_patterns: ['(?i)\b(?:pkr|rs\.?|rupees)\s*\d[\d,]*']}

@@ -1,51 +1,42 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import { Route, Routes } from 'react-router'
 
-type HealthResponse = {
-  api: string;
-  database: string;
-};
+import { Layout } from './components/Layout'
+import { LoginPage } from './pages/LoginPage'
+import { NewProfilePage } from './pages/NewProfilePage'
+import { ProfilesPage } from './pages/ProfilesPage'
+import { BookingsPage } from './pages/profile/BookingsPage'
+import { ChannelsPage } from './pages/profile/ChannelsPage'
+import { ConsolePage } from './pages/profile/ConsolePage'
+import { ConversationDetailPage, ConversationsPage } from './pages/profile/ConversationsPage'
+import { EscalationsPage } from './pages/profile/EscalationsPage'
+import { FollowUpsPage } from './pages/profile/FollowUpsPage'
+import { KnowledgePage } from './pages/profile/KnowledgePage'
+import { OverviewPage } from './pages/profile/OverviewPage'
+import { ProfileLayout } from './pages/profile/ProfileLayout'
+import { SettingsPage } from './pages/profile/SettingsPage'
 
-function App() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string>("");
-
-  useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL;
-
-    fetch(`${apiUrl}/api/v1/health`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Backend health check failed");
-        }
-
-        return response.json();
-      })
-      .then((data: HealthResponse) => {
-        setHealth(data);
-      })
-      .catch((requestError: Error) => {
-        setError(requestError.message);
-      });
-  }, []);
-
+// The operator dashboard (FR-08). Everything but the login page needs a session.
+export function AppRoutes() {
   return (
-    <main>
-      <h1>AgentIQ</h1>
-      <p>Technical foundation status</p>
-
-      {error && <p>Connection error: {error}</p>}
-
-      {!health && !error && <p>Checking services...</p>}
-
-      {health && (
-        <section>
-          <p>Backend API: {health.api}</p>
-          <p>PostgreSQL: {health.database}</p>
-        </section>
-      )}
-    </main>
-  );
+    <Routes>
+      <Route path="login" element={<LoginPage />} />
+      <Route element={<Layout />}>
+        <Route index element={<ProfilesPage />} />
+        <Route path="profiles/new" element={<NewProfilePage />} />
+        <Route path="profiles/:profileId" element={<ProfileLayout />}>
+          <Route index element={<OverviewPage />} />
+          <Route path="settings" element={<SettingsPage />} />
+          <Route path="knowledge" element={<KnowledgePage />} />
+          <Route path="channels" element={<ChannelsPage />} />
+          <Route path="console" element={<ConsolePage />} />
+          <Route path="conversations" element={<ConversationsPage />} />
+          <Route path="conversations/:sessionId" element={<ConversationDetailPage />} />
+          <Route path="escalations" element={<EscalationsPage />} />
+          <Route path="bookings" element={<BookingsPage />} />
+          <Route path="follow-ups" element={<FollowUpsPage />} />
+        </Route>
+        <Route path="*" element={<p className="p-6">This page does not exist.</p>} />
+      </Route>
+    </Routes>
+  )
 }
-
-export default App;

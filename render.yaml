@@ -1,0 +1,86 @@
+# Render Blueprint: the whole AgentIQ deployment (FR-10-08; ADR-0012).
+# Render dashboard > New > Blueprint > pick this repository. Then fill in the values marked
+# `sync: false` (Render asks for them) and follow docs/deployment.md.
+#
+# Plans: `starter` keeps the service awake, which phone calls need (Twilio gives up after
+# 15 seconds; a free service takes about a minute to wake). Set `plan: free` to try it out.
+
+services:
+  - type: web
+    name: agentiq
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/v1/health/live
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: agentiq-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: agentiq-redis
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      # The service's own address, e.g. https://agentiq.onrender.com (no trailing slash).
+      - key: PUBLIC_BASE_URL
+        sync: false
+      # The demo business, created on the first start (three example profiles).
+      - key: DEMO_OPERATOR_EMAIL
+        sync: false
+      - key: DEMO_OPERATOR_PASSWORD
+        sync: false
+      # Language model (any OpenAI-compatible API).
+      - key: LLM_API_KEY
+        sync: false
+      - key: LLM_BASE_URL
+        sync: false
+      - key: LLM_MODEL
+        sync: false
+      # Phone calls and text messages.
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_FROM_NUMBER
+        sync: false
+      - key: VOICE_LANGUAGE
+        value: en-IN
+      - key: VOICE_SAY_VOICE
+        value: Polly.Aditi
+      # Email: replies and notices out (SMTP), customers' emails in (IMAP).
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_USERNAME
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: IMAP_HOST
+        sync: false
+      - key: IMAP_USERNAME
+        sync: false
+      - key: IMAP_PASSWORD
+        sync: false
+
+  - type: keyvalue
+    name: agentiq-redis
+    plan: free
+    region: singapore
+    maxmemoryPolicy: noeviction
+    ipAllowList: [] # reachable only from the services in this account
+
+databases:
+  - name: agentiq-db
+    plan: basic-256mb
+    region: singapore
+    databaseName: agentiq
+    user: agentiq
+    postgresMajorVersion: "17"
+    ipAllowList: [] # reachable only from the services in this account

@@ -1,0 +1,108 @@
+# Evaluation scenarios for the restaurant profile (FR-10, TC-10; ADR-0009). Synthetic data.
+# Each scenario starts a fresh copy of the example profile with the documents below, at
+# `start` (local time at the business). `expect` is the ground truth the run is scored on.
+domain: restaurant
+documents: [menu.md]
+scenarios:
+  - id: R01
+    title: Closing time on Saturday
+    category: knowledge
+    start: "2026-11-02T11:00"
+    caller: {name: Ali Raza, phone: "+92 300 5550101"}
+    turns:
+      - What time do you close on Saturday night?
+    expect:
+      - {kind: answer, id: closing-time, topic: hours, facts: [["00:30", "12:30 am", "12:30 at night", "half past midnight"]]}
+
+  - id: R02
+    title: Halal food
+    category: knowledge
+    start: "2026-11-02T11:00"
+    caller: {name: Sana Iqbal, phone: "+92 300 5550102"}
+    turns:
+      - Is all your food halal?
+    expect:
+      - {kind: answer, id: halal, topic: policies, facts: [["yes", "all our food is halal", "fully halal", "100% halal"]], forbid: ["not halal", "isn't halal"]}
+
+  - id: R03
+    title: Price of a full chicken karahi (document)
+    category: knowledge
+    start: "2026-11-02T11:00"
+    caller: {name: Omar Farooq, phone: "+92 300 5550103"}
+    turns:
+      - How much is a full chicken karahi?
+    expect:
+      - {kind: answer, id: karahi-price, facts: [["2,400", "2400"]]}
+
+  - id: R04
+    title: Weekday lunch deal (document)
+    category: knowledge
+    start: "2026-11-02T11:00"
+    caller: {name: Zara Malik, phone: "+92 300 5550104"}
+    turns:
+      - Do you have any lunch deal on weekdays, and what does it cost?
+    expect:
+      - {kind: answer, id: lunch-deal, facts: [["1,250", "1250"]]}
+
+  - id: R05
+    title: Book a table for four
+    category: booking
+    start: "2026-11-02T11:00"
+    caller: {name: Ali Raza, phone: "+92 300 5550105"}
+    turns:
+      - I'd like to book a table for 4 people on Friday 6 November at 8 pm. My name is Ali Raza.
+    expect:
+      - {kind: booking, id: table, service_id: dine-in, party_size: 4, date: "2026-11-06", time: "20:00"}
+
+  - id: R06
+    title: Cancel a booking by reference
+    category: cancellation
+    start: "2026-11-02T11:00"
+    caller: {name: Sana Iqbal, phone: "+92 300 5550106"}
+    setup_booking: {service_id: dine-in, party_size: 2, date: "2026-11-05", time: "19:30"}
+    turns:
+      - Please cancel my booking. The reference is {reference}.
+    expect:
+      - {kind: cancelled, id: cancel}
+
+  - id: R07
+    title: Opening time plus a booking (TC-03)
+    category: multi_intent
+    start: "2026-11-02T11:00"
+    caller: {name: Bilal Ahmed, phone: "+92 300 5550107"}
+    turns:
+      - What time do you open on Sunday? And please book a table for 2 at 1 pm on Sunday 8 November, my name is Bilal Ahmed.
+    expect:
+      - {kind: answer, id: sunday-opening, topic: hours, facts: [["12:00", "12 pm", "12:00 pm", "noon"]]}
+      - {kind: booking, id: table, service_id: dine-in, party_size: 2, date: "2026-11-08", time: "13:00"}
+
+  - id: R08
+    title: Kids' menu plus private dining
+    category: multi_intent
+    start: "2026-11-02T11:00"
+    caller: {name: Hira Shah, phone: "+92 300 5550108"}
+    turns:
+      - Do you have a kids' menu? I also want to book the private dining room for 15 people on Saturday 14 November at 8 pm. Name is Hira Shah.
+    expect:
+      - {kind: answer, id: kids-menu, topic: policies, facts: [["high chair", "high chairs", "yes"]], forbid: ["no kids", "don't have a kids", "do not have a kids"]}
+      - {kind: booking, id: private-room, service_id: private-dining, party_size: 15, date: "2026-11-14", time: "20:00"}
+
+  - id: R09
+    title: Angry customer asks for the manager
+    category: complaint
+    start: "2026-11-02T11:00"
+    caller: {name: Kashif Mehmood, phone: "+92 300 5550109"}
+    turns:
+      - This is the second time my order came cold and the waiter was rude. I want to speak to the manager right now.
+    expect:
+      - {kind: escalation, id: handoff}
+
+  - id: R10
+    title: Price of something the business never mentions
+    category: out_of_scope
+    start: "2026-11-02T11:00"
+    caller: {name: Maria Khan, phone: "+92 300 5550110"}
+    turns:
+      - How much does it cost to hire your live band for a wedding?
+    expect:
+      - {kind: refusal, id: no-band-price, forbid_patterns: ['(?i)\b(?:pkr|rs\.?|rupees)\s*\d[\d,]*']}

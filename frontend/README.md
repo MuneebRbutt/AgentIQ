@@ -1,32 +1,21 @@
-# React + TypeScript + Vite
+# AgentIQ frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Operator dashboard (React 19 + TypeScript + Vite + Tailwind). Setup and how to use it are in
+the [root README](../README.md); conventions in [CLAUDE.md](../CLAUDE.md) and
+[ADR-0008](../docs/adr/0008-operator-dashboard.md).
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```powershell
+npm ci
+npm run dev        # http://localhost:5173 (reads VITE_API_URL from the root .env)
+npm run lint ; npm run typecheck ; npm test ; npm run build
+npm run gen:api    # after the API changes: regenerate src/api/schema.d.ts
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+```
+src/
+├── api/          typed client (client.ts, generated schema.d.ts), login state (auth*.ts*)
+├── components/   shared UI (ui.tsx), page frame (Layout), editor/ (profile form)
+├── lib/          plain helpers: paths, validation messages, formatting, status colours
+├── pages/        one file per screen; profile/ holds the tabs of one profile
+└── test/         Vitest setup, a fake API (fakeApi.ts) and renderApp for page tests
+```

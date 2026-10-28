@@ -1,0 +1,214 @@
+{
+  "name": "Spice Garden",
+  "domain": "restaurant",
+  "description": "Family restaurant in Gulberg serving Pakistani and continental food.",
+  "timezone": "Asia/Karachi",
+  "currency": "PKR",
+  "contact": {
+    "phone": "+92 42 3570 2200",
+    "email": "bookings@spicegarden.example.com",
+    "address": "45 Main Boulevard, Gulberg III, Lahore",
+    "website": null
+  },
+  "opening_hours": {
+    "monday": [
+      {
+        "opens": "12:00:00",
+        "closes": "15:30:00"
+      },
+      {
+        "opens": "19:00:00",
+        "closes": "23:30:00"
+      }
+    ],
+    "tuesday": [
+      {
+        "opens": "12:00:00",
+        "closes": "15:30:00"
+      },
+      {
+        "opens": "19:00:00",
+        "closes": "23:30:00"
+      }
+    ],
+    "wednesday": [
+      {
+        "opens": "12:00:00",
+        "closes": "15:30:00"
+      },
+      {
+        "opens": "19:00:00",
+        "closes": "23:30:00"
+      }
+    ],
+    "thursday": [
+      {
+        "opens": "12:00:00",
+        "closes": "15:30:00"
+      },
+      {
+        "opens": "19:00:00",
+        "closes": "23:30:00"
+      }
+    ],
+    "friday": [
+      {
+        "opens": "12:00:00",
+        "closes": "15:30:00"
+      },
+      {
+        "opens": "19:00:00",
+        "closes": "00:30:00"
+      }
+    ],
+    "saturday": [
+      {
+        "opens": "12:00:00",
+        "closes": "00:30:00"
+      }
+    ],
+    "sunday": [
+      {
+        "opens": "12:00:00",
+        "closes": "23:30:00"
+      }
+    ]
+  },
+  "services": [
+    {
+      "id": "dine-in",
+      "name": "Table reservation",
+      "description": null,
+      "duration_minutes": 90,
+      "price": null
+    },
+    {
+      "id": "private-dining",
+      "name": "Private dining room",
+      "description": "Separate room for celebrations and business dinners.",
+      "duration_minutes": 180,
+      "price": null
+    }
+  ],
+  "resources": [
+    {
+      "id": "table-2",
+      "name": "Table for 2",
+      "kind": "table",
+      "quantity": 8,
+      "capacity": 2,
+      "service_ids": [
+        "dine-in"
+      ],
+      "description": null
+    },
+    {
+      "id": "table-4",
+      "name": "Table for 4",
+      "kind": "table",
+      "quantity": 10,
+      "capacity": 4,
+      "service_ids": [
+        "dine-in"
+      ],
+      "description": null
+    },
+    {
+      "id": "table-8",
+      "name": "Table for 8",
+      "kind": "table",
+      "quantity": 3,
+      "capacity": 8,
+      "service_ids": [
+        "dine-in"
+      ],
+      "description": null
+    },
+    {
+      "id": "private-room",
+      "name": "Private room",
+      "kind": "room",
+      "quantity": 1,
+      "capacity": 20,
+      "service_ids": [
+        "private-dining"
+      ],
+      "description": null
+    }
+  ],
+  "booking_rules": {
+    "mode": "time_slot",
+    "slot_minutes": 30,
+    "default_duration_minutes": null,
+    "check_in_time": null,
+    "check_out_time": null,
+    "max_nights": null,
+    "min_party_size": 1,
+    "max_party_size": 20,
+    "min_notice_minutes": 60,
+    "max_advance_days": 60,
+    "cancellation_notice_hours": 2,
+    "required_details": [
+      "name",
+      "phone"
+    ],
+    "custom_fields": [
+      {
+        "key": "occasion",
+        "label": "Special occasion",
+        "required": false
+      }
+    ]
+  },
+  "policies": [
+    {
+      "title": "Reservations",
+      "text": "Tables are held for 15 minutes after the booking time."
+    },
+    {
+      "title": "Cancellation",
+      "text": "Please cancel at least 2 hours before your booking. Private dining needs 24 hours' notice."
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Do you serve halal food?",
+      "answer": "Yes, all our food is halal."
+    },
+    {
+      "question": "Is there a kids' menu?",
+      "answer": "Yes, we have a kids' menu and high chairs."
+    }
+  ],
+  "escalation": {
+    "negative_sentiment_threshold": 0.7,
+    "keywords": [
+      "manager",
+      "food poisoning",
+      "refund"
+    ],
+    "negative_turns_in_a_row": 3,
+    "max_clarification_attempts": 3,
+    "notify_email": null,
+    "notify_phone": "+92 300 1234567",
+    "handoff_message": "I'm sorry about this. I've passed your request to our team and someone will contact you shortly."
+  },
+  "follow_up": {
+    "confirmation": true,
+    "reminder_hours_before": [
+      24
+    ],
+    "feedback": true,
+    "feedback_delay_minutes": 60,
+    "channel": "sms",
+    "confirmation_message": "{business}: your booking {reference} is confirmed for {service}, {when}, party of {party_size}. Call {business_phone} to change it.",
+    "update_message": "{business}: your booking {reference} has been changed. It is now {service}, {when}, party of {party_size}.",
+    "reminder_message": "Reminder from {business}: {service}, {when}, party of {party_size} (booking {reference}). Call {business_phone} if your plans change.",
+    "feedback_message": "Thank you for contacting {business}. How did we do? Reply with a score from 1 to 5 and any comments."
+  },
+  "assistant": {
+    "greeting": "Assalam-o-Alaikum, welcome to Spice Garden! Would you like to book a table or ask about our menu?",
+    "tone": "friendly and upbeat",
+    "extra_instructions": null
+  }
+}

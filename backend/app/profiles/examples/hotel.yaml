@@ -1,0 +1,104 @@
+# Example hotel profile (synthetic data). Starter template for new hotel profiles and
+# seed data for demos: python -m app.cli seed-profiles --tenant-id <id>
+name: Grand Lahore Hotel
+domain: hotel
+description: A 60-room business hotel on Mall Road with a restaurant, gym and airport shuttle.
+timezone: Asia/Karachi
+currency: PKR
+contact:
+  phone: "+92 42 3500 1000"
+  email: reservations@grandlahore.example.com
+  address: 12 Mall Road, Lahore
+  website: https://grandlahore.example.com
+
+# The front desk is open around the clock.
+opening_hours:
+  monday: [{opens: "00:00", closes: "23:59"}]
+  tuesday: [{opens: "00:00", closes: "23:59"}]
+  wednesday: [{opens: "00:00", closes: "23:59"}]
+  thursday: [{opens: "00:00", closes: "23:59"}]
+  friday: [{opens: "00:00", closes: "23:59"}]
+  saturday: [{opens: "00:00", closes: "23:59"}]
+  sunday: [{opens: "00:00", closes: "23:59"}]
+
+services:
+  - id: room-stay
+    name: Room stay
+    description: Overnight accommodation, breakfast included.
+  - id: airport-shuttle
+    name: Airport shuttle
+    description: Pick-up from Allama Iqbal International Airport.
+    price: 3500
+
+resources:
+  - id: standard-room
+    name: Standard room
+    kind: room type
+    quantity: 30
+    capacity: 2
+    service_ids: [room-stay]
+    description: Queen bed, city view, 24 m².
+  - id: deluxe-room
+    name: Deluxe room
+    kind: room type
+    quantity: 20
+    capacity: 3
+    service_ids: [room-stay]
+    description: King bed and sofa bed, 32 m².
+  - id: family-suite
+    name: Family suite
+    kind: room type
+    quantity: 10
+    capacity: 5
+    service_ids: [room-stay]
+    description: Two bedrooms and a lounge, 55 m².
+
+booking_rules:
+  mode: overnight
+  check_in_time: "14:00"
+  check_out_time: "12:00"
+  max_nights: 30
+  min_party_size: 1
+  max_party_size: 5
+  min_notice_minutes: 120
+  max_advance_days: 365
+  cancellation_notice_hours: 48
+  required_details: [name, phone, email]
+  custom_fields:
+    - key: arrival_time
+      label: Expected arrival time
+      required: false
+
+policies:
+  - title: Cancellation
+    text: Free cancellation up to 48 hours before check-in. Later cancellations are charged one night.
+  - title: Check-in
+    text: Check-in from 14:00, check-out by 12:00. A valid CNIC or passport is required at check-in.
+  - title: Children
+    text: Children under 6 stay free when sharing existing beds.
+
+faqs:
+  - question: Is breakfast included?
+    answer: Yes, a buffet breakfast is included with every room from 06:30 to 10:30.
+  - question: Do you have parking?
+    answer: Free covered parking is available for guests.
+
+escalation:
+  negative_sentiment_threshold: 0.7
+  keywords: [manager, refund, complaint]
+  max_clarification_attempts: 3
+  notify_email: duty.manager@grandlahore.example.com
+
+follow_up:
+  confirmation: true
+  reminder_hours_before: [48]
+  feedback: true
+  feedback_delay_minutes: 120
+  channel: email
+  confirmation_message: "{business}: your reservation {reference} is confirmed, {service}, {when}, for {party_size} guest(s). We look forward to welcoming you."
+  update_message: "{business}: your reservation {reference} has been changed. It is now {service}, {when}, for {party_size} guest(s)."
+  reminder_message: "{business}: we look forward to your stay, {service}, {when} (reservation {reference}). Call {business_phone} for airport pick-up or late arrival."
+
+assistant:
+  greeting: Thank you for calling the Grand Lahore Hotel. How can I help you today?
+  tone: warm and professional

@@ -1,0 +1,9 @@
+participant,task,completed,seconds,errors,assisted,notes
+P01,T1 Log in,,,,,
+P01,T2 Set up a profile,,,,,
+P01,T3 Teach it a document,,,,,
+P01,T4 Book as a customer,,,,,
+P01,T5 Handle a complaint,,,,,
+P01,T6 Review a conversation,,,,,
+P01,C1 Call and book,,,,,
+P01,C2 Text a question,,,,,

@@ -1,0 +1,98 @@
+# Example clinic profile (synthetic data, no real patients or doctors). Starter template
+# for new clinic profiles and seed data for demos: python -m app.cli seed-profiles --tenant-id <id>
+name: CareWell Family Clinic
+domain: clinic
+description: Outpatient clinic with general practice and paediatrics.
+timezone: Asia/Karachi
+currency: PKR
+contact:
+  phone: "+92 42 3590 4400"
+  email: appointments@carewell.example.com
+  address: 8 Jail Road, Lahore
+
+opening_hours:
+  monday: [{opens: "09:00", closes: "13:00"}, {opens: "17:00", closes: "21:00"}]
+  tuesday: [{opens: "09:00", closes: "13:00"}, {opens: "17:00", closes: "21:00"}]
+  wednesday: [{opens: "09:00", closes: "13:00"}, {opens: "17:00", closes: "21:00"}]
+  thursday: [{opens: "09:00", closes: "13:00"}, {opens: "17:00", closes: "21:00"}]
+  friday: [{opens: "09:00", closes: "12:30"}, {opens: "17:00", closes: "21:00"}]
+  saturday: [{opens: "10:00", closes: "14:00"}]
+
+services:
+  - id: general-consultation
+    name: General consultation
+    duration_minutes: 15
+    price: 2000
+  - id: paediatric-consultation
+    name: Paediatric consultation
+    duration_minutes: 20
+    price: 2500
+  - id: follow-up
+    name: Follow-up visit
+    duration_minutes: 10
+    price: 1000
+
+resources:
+  - id: dr-ayesha
+    name: Dr. Ayesha Malik
+    kind: doctor
+    quantity: 1
+    capacity: 1
+    service_ids: [general-consultation, follow-up]
+    description: General practitioner.
+  - id: dr-hamza
+    name: Dr. Hamza Qureshi
+    kind: doctor
+    quantity: 1
+    capacity: 1
+    service_ids: [paediatric-consultation, follow-up]
+    description: Paediatrician.
+
+booking_rules:
+  mode: time_slot
+  slot_minutes: 5
+  min_party_size: 1
+  max_party_size: 1
+  min_notice_minutes: 30
+  max_advance_days: 30
+  cancellation_notice_hours: 4
+  required_details: [name, phone]
+  custom_fields:
+    - key: patient_age
+      label: Patient's age
+    - key: reason_for_visit
+      label: Reason for visit
+
+policies:
+  - title: Appointments
+    text: Please arrive 10 minutes early. Late arrivals of more than 15 minutes may need to rebook.
+  - title: Cancellation
+    text: Cancel or reschedule at least 4 hours before your appointment.
+  - title: Emergencies
+    text: We do not handle emergencies. For a medical emergency call 1122 or go to the nearest hospital.
+
+faqs:
+  - question: Do you accept walk-ins?
+    answer: Walk-ins are seen when a doctor is free; booked appointments come first.
+
+escalation:
+  negative_sentiment_threshold: 0.6
+  keywords: [emergency, chest pain, bleeding, complaint]
+  max_clarification_attempts: 2
+  notify_phone: "+92 321 7654321"
+  handoff_message: I'm connecting you with our reception team now. If this is a medical emergency, please call 1122.
+
+follow_up:
+  confirmation: true
+  reminder_hours_before: [24, 2]
+  feedback: true
+  feedback_delay_minutes: 30
+  channel: sms
+  confirmation_message: "{business}: your appointment {reference} for {service} is booked, {when}. Please arrive 10 minutes early."
+  update_message: "{business}: your appointment {reference} has moved. It is now {service}, {when}."
+  reminder_message: "Reminder from {business}: {service}, {when} (appointment {reference}). Call {business_phone} if you can't make it."
+
+assistant:
+  greeting: Thank you for calling CareWell Family Clinic. How can I help you today?
+  tone: calm and reassuring
+  extra_instructions: Never give medical advice or a diagnosis; offer an appointment instead.

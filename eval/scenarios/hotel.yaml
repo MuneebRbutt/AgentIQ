@@ -1,0 +1,106 @@
+# Evaluation scenarios for the hotel profile (FR-10, TC-10; ADR-0009). Synthetic data.
+domain: hotel
+documents: [guest_guide.md]
+scenarios:
+  - id: H01
+    title: Check-in time
+    category: knowledge
+    start: "2026-11-02T10:00"
+    caller: {name: Usman Tariq, phone: "+92 301 5550201", email: usman@example.com}
+    turns:
+      - What time is check-in?
+    expect:
+      - {kind: answer, id: check-in, topic: policies, facts: [["14:00", "2 pm", "2:00 pm", "2pm"]]}
+
+  - id: H02
+    title: Breakfast hours
+    category: knowledge
+    start: "2026-11-02T10:00"
+    caller: {name: Ayesha Noor, phone: "+92 301 5550202", email: ayesha@example.com}
+    turns:
+      - Is breakfast included, and until what time is it served?
+    expect:
+      - {kind: answer, id: breakfast, topic: policies, facts: [["10:30", "10.30", "10:30 am"]]}
+
+  - id: H03
+    title: Early check-in price (document)
+    category: knowledge
+    start: "2026-11-02T10:00"
+    caller: {name: Kamran Ali, phone: "+92 301 5550203", email: kamran@example.com}
+    turns:
+      - Can I check in early, and how much does that cost?
+    expect:
+      - {kind: answer, id: early-check-in, facts: [["10:00", "10 am", "10am", "10:00 am"], ["3,000", "3000"]]}
+
+  - id: H04
+    title: Same-day laundry (document)
+    category: knowledge
+    start: "2026-11-02T10:00"
+    caller: {name: Mehwish Raza, phone: "+92 301 5550204", email: mehwish@example.com}
+    turns:
+      - By what time do I need to hand in laundry to get it back the same day?
+    expect:
+      - {kind: answer, id: laundry, facts: [["9:00", "09:00", "9 am", "9am", "9:00 am"]]}
+
+  - id: H05
+    title: Book a room for two for three nights
+    category: booking
+    start: "2026-11-02T10:00"
+    caller: {name: Usman Tariq, phone: "+92 301 5550205", email: usman@example.com}
+    turns:
+      - I want to book a room for 2 adults, checking in on Thursday 12 November for 3 nights. My name is Usman Tariq and my email is usman@example.com.
+    expect:
+      - {kind: booking, id: room, service_id: room-stay, party_size: 2, date: "2026-11-12", nights: 3}
+
+  - id: H06
+    title: Cancel a reservation by reference
+    category: cancellation
+    start: "2026-11-02T10:00"
+    caller: {name: Faisal Javed, phone: "+92 301 5550206", email: faisal@example.com}
+    setup_booking: {service_id: room-stay, party_size: 1, date: "2026-11-20", nights: 2}
+    turns:
+      - I need to cancel my reservation, reference {reference}.
+    expect:
+      - {kind: cancelled, id: cancel}
+
+  - id: H07
+    title: Parking plus a booking
+    category: multi_intent
+    start: "2026-11-02T10:00"
+    caller: {name: Ayesha Noor, phone: "+92 301 5550207", email: ayesha@example.com}
+    turns:
+      - Do you have parking for guests? Also book me a room for 1 person from Monday 9 November for 2 nights. I'm Ayesha Noor, email ayesha@example.com.
+    expect:
+      - {kind: answer, id: parking, topic: policies, facts: [["free"]], forbid: ["no parking", "don't have parking"]}
+      - {kind: booking, id: room, service_id: room-stay, party_size: 1, date: "2026-11-09", nights: 2}
+
+  - id: H08
+    title: Shuttle price plus a booking
+    category: multi_intent
+    start: "2026-11-02T10:00"
+    caller: {name: Kamran Ali, phone: "+92 301 5550208", email: kamran@example.com}
+    turns:
+      - How much is the airport shuttle? Please also book a room for 3 people from Monday 16 November for 1 night, name Kamran Ali, email kamran@example.com.
+    expect:
+      - {kind: answer, id: shuttle-price, topic: services, facts: [["3,500", "3500"]]}
+      - {kind: booking, id: room, service_id: room-stay, party_size: 3, date: "2026-11-16", nights: 1}
+
+  - id: H09
+    title: Angry guest wants a refund
+    category: complaint
+    start: "2026-11-02T10:00"
+    caller: {name: Shahid Iqbal, phone: "+92 301 5550209", email: shahid@example.com}
+    turns:
+      - I am really angry. My room was dirty, nobody at the desk helped me, and I want a refund.
+    expect:
+      - {kind: escalation, id: handoff}
+
+  - id: H10
+    title: Price of something the business never mentions
+    category: out_of_scope
+    start: "2026-11-02T10:00"
+    caller: {name: Rabia Aslam, phone: "+92 301 5550210", email: rabia@example.com}
+    turns:
+      - How much does it cost to book your banquet hall for a wedding?
+    expect:
+      - {kind: refusal, id: no-hall-price, forbid_patterns: ['(?i)\b(?:pkr|rs\.?|rupees)\s*\d[\d,]*']}

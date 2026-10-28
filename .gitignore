@@ -24,3 +24,18 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Python tooling
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Frontend tests
+frontend/coverage/
+
+# Local data (ChromaDB index, uploads)
+backend/data/
+
+# Evaluation runs: keep report.md and summary.csv, not the full transcripts
+eval/reports/**/results.json

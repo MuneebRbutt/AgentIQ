@@ -1,0 +1,10 @@
+# Evaluator overrides (UC-10 alternative path). Copy to adjudications.yaml, keep one entry
+# per judgment you overrule, and rebuild the report with `evaluate-report --adjudications`.
+# `id` is an expectation id from the scenario file, or a guard: replied, no-extra-booking,
+# no-needless-handoff. Leave out `repetition` to apply to every repetition.
+- system: agentiq
+  scenario: R01
+  id: closing-time
+  correct: true
+  note: Said "half an hour after midnight", which is 00:30.
+  repetition: 1

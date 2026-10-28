@@ -1,0 +1,18 @@
+# Keep secrets, local data and build output out of the image.
+.env
+**/.env
+.git
+.github
+**/__pycache__
+**/*.py[cod]
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+backend/.venv
+backend/data
+backend/*.egg-info
+frontend/node_modules
+frontend/dist
+frontend/coverage
+eval/reports
+docs/spec
